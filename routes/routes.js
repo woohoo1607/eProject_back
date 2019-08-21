@@ -1,10 +1,23 @@
-const router = (app, client) => {
+const mongoose = require('mongoose');
+const empl = require("../models/employeeSchema");
+//const usr = require("../models/userSchema");
+const uri = "mongodb://localhost:27017/ecp";
+const mongooseOption = {useNewUrlParser: true};
+const crypto = require('crypto');
+
+/*function hash(text) {
+    return crypto.createHash('sha1').update(text).digest('base64');
+}*/
+const router = (app) => {
     
     app.get("/employees/", function (request, response) {
 
-        const db = client.db("ecp");
-        const collection = db.collection("employees");
-
+/*       var user = {
+         login: "woohoo",
+         password: hash("123")
+       };
+*/       
+       
         let r = {
             
         };
@@ -32,15 +45,18 @@ const router = (app, client) => {
                 
             }
         }
-
+        
 
         let result = () =>
         {
-            collection.find(r).skip(skip).limit(limit).toArray().then(function (results) {
-                collection.find().count().then (function (cnt) {
-                    response.setHeader('Access-Control-Allow-Origin', '*');
-                    response.setHeader('Access-Control-Allow-Headers', 'origin, content-type, accept');
+            mongoose.connect(uri, mongooseOption);
+            empl.find().skip(skip).limit(limit).then(function (results) {
+                empl.find().countDocuments().then (function (cnt) {
+                    //response.setHeader('Access-Control-Allow-Origin', '*');
+                    //response.setHeader('Access-Control-Allow-Headers', 'origin, content-type, accept');
                     response.json({employees: results, countAll:cnt});
+                    //new usr(user).save();
+                    mongoose.disconnect();
                 });
             }, function (err) {
                 console.error('Error!!!', err, err.stack);
