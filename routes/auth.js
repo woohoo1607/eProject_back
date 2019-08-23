@@ -21,7 +21,7 @@ const auth = (app) => {
         api.findUser(req.session.user)
                 .then(function (user) {
                     if (user) {
-                        res.json({userData: {id: user._id, login: user.login}, responseCode: 0, message: null});
+                        return res.json({userData: {id: user._id, login: user.login}, responseCode: 0, message: null});
                     } else {
                         return res.json({userData: {}, responseCode: 1, message: "User is not corrected"});;
                     }
@@ -41,7 +41,7 @@ const auth = (app) => {
                         req.session.user = {id: user._id, login: user.login};
                         req.session.save();
                         console.log(req.session);
-                        res.json({responseCode: 0, message: null});
+                        return res.json({responseCode: 0, message: null});
                     } else {
                         return res.json({responseCode: 1, message: "Login or password not correct"});
                     }
